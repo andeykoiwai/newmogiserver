@@ -48,13 +48,50 @@ Server akan aktif di: `http://0.0.0.0:8888`
 
 ---
 
-## 🔌 Cara Menjalankan Client (ESP32)
+🔌 Alat yang Dibutuhkan:
 
-### Alat yang Dibutuhkan:
+Proyek ini menggunakan berbagai komponen untuk membuat sistem ESP32 S3 berbasis audio dan AI. Berikut daftar lengkap perangkat keras:
+🧠 Komponen Utama:
 
-* ESP32 (S3, WROOM, dll)
-* Modul mikrofon (INMP441/I2S)
-* Arduino IDE atau PlatformIO
+    ESP32-S3 N16R8 (Microcontroller utama)
+
+    Modul Mikrofon INMP441 (I2S Digital Microphone)
+
+    Amplifier MAX98357A (I2S ke speaker)
+
+    Speaker kecil (mono, 3W)
+
+🔭 Sensor dan Tampilan:
+
+    Sensor Jarak VL53L0X (I2C)
+
+    OLED GC9A01 (SPI, layar bundar)
+
+🔧 Aktuator dan Motor:
+
+    2 Set Motor Gearbox N20 + Roda
+
+    L298N Mini Motor Driver (kendali 2 motor DC)
+
+🔋 Daya dan Pengisian:
+
+    2x Baterai 18650 (2S, 7.4V)
+
+    Step-down MP1584EN (Buck converter 3.3V / 5V)
+
+    BMS 2S Balanced 20A (untuk proteksi pengisian baterai Li-Ion)
+
+    Pengisi daya USB-C 2S Li-Ion Charger (8.4V, 2A)
+
+🧰 Komponen Pendukung:
+
+    Kabel Jumper
+
+    PCB Dot Matrix (lubang) – untuk sambungan semi permanen
+
+    Switch / Saklar
+
+    Pin Header, Resistor, dll (jika diperlukan)
 
 ### Konfigurasi Penting dalam Kode:
 
@@ -131,9 +168,15 @@ Atas Nama: **Dewi Lestari**
 
 ## 📬 Kontak
 
-* GitHub: [@andeykoiwai](https://github.com/andeykoiwai)
-* Email: (andeykoiwai@gmail.com)
-* Telegram: update
+* GitHub: [@andeykoiwai](https://github.com/andeykoiwai)  
+* Email: andeykoiwai@gmail.com  
+* WhatsApp: +62 899 8210 011  
+  ![QR WhatsApp](./Gambar/api.qrserver.png)  
+  [Klik untuk chat langsung](https://wa.me/628998210011)  
+* Facebook: Takako Andey  
+* TikTok: [@mogirobotic](https://www.tiktok.com/@mogirobotic)  
+* YouTube: [@mogirobotik](https://www.youtube.com/@mogirobotik)
+
 
 ---
 
