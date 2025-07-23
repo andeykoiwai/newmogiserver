@@ -785,11 +785,13 @@ def upload_audio():
                                 print(f"<< Jawaban dari GROQ: {server_user}")
                             except Exception as e:
                                 print(f"GROQ gagal: {e}, fallback ke Gemini...")
-                                # Fallback ke Gemini
-                                server_user = call_gemini_ai('jawab dengan singkat, ' + esp_user)
-                                print(f"<< Jawaban dari Gemini: {server_user}")
-                            # response = model.generate_content('jawab dengan singkat, ' + esp_user)
-                            # server_user = response.text
+                                try:
+                                    # Fallback ke Gemini
+                                    server_user = call_gemini_ai('jawab dengan singkat, ' + esp_user)
+                                    print(f"<< Jawaban dari Gemini: {server_user}")
+                                except Exception as e2:
+                                    print(f"Gemini gagal: {e2}, fallback ke cache...")
+                                    server_user = "Maaf, saya tidak dapat menjawab pertanyaanmu. Silakan coba lagi nanti. Token Habis"
             
             print(f'esp_user: {esp_user}')
             print(f'server_user: {server_user}')
