@@ -1,0 +1,7 @@
+Flask
+gTTS
+SpeechRecognition
+tinydb
+requests
+google-generativeai
+python-dotenv
