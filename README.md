@@ -177,7 +177,27 @@ Atas Nama: **Dewi Lestari**
 * TikTok: [@mogirobotic](https://www.tiktok.com/@mogirobotic)  
 * YouTube: [@mogirobotik](https://www.youtube.com/@mogirobotik)
 
+## 🖼️ Dokumentasi Visual
 
+### 🔧 Skema Rangkaian (Fritzing)
+![Skema Fritzing](./Gambar/MOGIFritzingdiagram.png)
+
+---
+
+### 🧰 Setting Arduino IDE
+![Setting Arduino IDE 1](./Gambar/arduinosetup1.png)
+![Setting Arduino IDE 2](./Gambar/arduinosetup2.png)
+
+---
+
+### 🌐 Tampilan Menu WebMogi
+![Menu WebMogi](./Gambar/webmogimain.png)
+![Menu WebMogi Wifi](./Gambar/webmogiwifi.png)
+![Menu WebMogi Setting 1](./Gambar/webmogiconfig1.png)
+![Menu WebMogi Setting 2](./Gambar/webmogiconfig2.png)
+![Menu WebMogi MP3 1](./Gambar/webmogimp3menu1.png)
+![Menu WebMogi MP3 2](./Gambar/webmogimp3menu2.png)
+![Menu WebMogi Teman](./Gambar/webmogiteman.png)
 ---
 
 > Terima kasih sudah menggunakan New Mogi Server & Client! Semoga bermanfaat untuk riset, robotika, AI, atau proyek IoT kamu 🚀
