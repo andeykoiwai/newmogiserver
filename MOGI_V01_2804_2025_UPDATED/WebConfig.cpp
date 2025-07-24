@@ -518,7 +518,7 @@ void WebConfig::loadMogiConfig() {
     mogiConfig.autoBlinkerVariation = 2;
     mogiConfig.breathing = true;
     mogiConfig.breathingSpeed = 1.1;
-    mogiConfig.breathingAmount = 1.1;
+    mogiConfig.breathingAmount = 0.5;
     mogiConfig.textColor = TFT_WHITE;
     mogiConfig.eyeColor = 0x17bc;
     // Default threshold touch
