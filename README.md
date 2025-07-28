@@ -1,6 +1,7 @@
 ### 🎬 Video Demo Mogi Pet
 
 [![Mogi Robotik](./Gambar/mogi_1.jpg)](https://youtube.com/shorts/MkC0C1nvI-Q)
+[![Tonton Video di YouTube](https://img.youtube.com/vi/MkC0C1nvI-Q/0.jpg)](https://www.youtube.com/watch?v=MkC0C1nvI-Q&autoplay=1)
 
 # 🧠 New Mogi Server & Client
 
