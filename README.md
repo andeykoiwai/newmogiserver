@@ -1,3 +1,7 @@
+### 🎬 Video Demo Mogi Pet
+
+[![Mogi Robotik](./Gambar/mogi_1.jpg)](https://youtube.com/shorts/MkC0C1nvI-Q)
+
 # 🧠 New Mogi Server & Client
 
 **Dibuat oleh: Andey Koiwai**
