@@ -52,51 +52,71 @@ Server akan aktif di: `http://0.0.0.0:8888`
 > Pastikan port dan alamat IP sesuai dengan client ESP32.
 
 ---
-
-🔌 Alat yang Dibutuhkan:
-
 Proyek ini menggunakan berbagai komponen untuk membuat sistem ESP32 S3 berbasis audio dan AI. Berikut daftar lengkap perangkat keras:
-🧠 Komponen Utama:
+🧠 Komponen Utama dan 🛒 Produk yang Dijual:
 
-    ESP32-S3 N16R8 (Microcontroller utama)
+Berikut adalah komponen dan paket yang saya jual untuk mendukung proyek Mogi dan robotik lainnya. Semua tersedia di Shopee!
 
-    Modul Mikrofon INMP441 (I2S Digital Microphone)
+🎁 Paket Lengkap
+    
+    Mogi 1 Set Komplit — Rp693.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/2Rjjf44)
 
-    Amplifier MAX98357A (I2S ke speaker)
+🔌 Komponen Elektronik
 
-    Speaker kecil (mono, 3W)
-
-🔭 Sensor dan Tampilan:
-
-    Sensor Jarak VL53L0X (I2C)
-
-    OLED GC9A01 (SPI, layar bundar)
-
-🔧 Aktuator dan Motor:
-
-    2 Set Motor Gearbox N20 + Roda
-
-    L298N Mini Motor Driver (kendali 2 motor DC)
-
-🔋 Daya dan Pengisian:
-
-    2x Baterai 18650 (2S, 7.4V)
-
-    Step-down MP1584EN (Buck converter 3.3V / 5V)
-
-    BMS 2S Balanced 20A (untuk proteksi pengisian baterai Li-Ion)
+    PCB Modifikasi — Rp57.600
+    [🛍️ Beli di Shopee](https://id.shp.ee/62QwaRH)
 
     Pengisi daya USB-C 2S Li-Ion Charger (8.4V, 2A)
+    Pengisi Daya USB-C 2S Li-Ion (8.4V, 2A) — Rp20.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/8RfSoH6)
 
-🧰 Komponen Pendukung:
+    BMS 2S Balanced 20A (untuk proteksi pengisian baterai Li-Ion)
+    BMS 2S — Rp28.800
+    [🛍️ Beli di Shopee](https://id.shp.ee/VtpTVV9)
 
-    Kabel Jumper
+    Step-down MP1584EN (Buck converter 3.3V / 5V)
+    Step-down Fix 5V — Rp10.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/SeKhZQU)
 
-    PCB Dot Matrix (lubang) – untuk sambungan semi permanen
+🔋 Daya dan Motor
+    2x Baterai 18650 (2S, 7.4V)
+    2x Baterai 18650 — Rp90.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/4xuLygX)
 
-    Switch / Saklar
+    L298N Mini Motor Driver (kendali 2 motor DC)
+    L298N Mini — Rp15.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/nmuyd1h)
 
-    Pin Header, Resistor, dll (jika diperlukan)
+    2 Set Motor Gearbox N20 + Roda
+    2 Set Motor Gearbox N20 + Roda — Rp90.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/xnJPSey)
+
+    Servo
+    Servo sg90 — Rp28.800
+    [🛍️ Beli di Shopee](https://id.shp.ee/nawvqaX)
+
+🔭 Sensor dan Tampilan:
+    OLED GC9A01 (SPI, layar bundar)
+    GC9A01 (Layar Bundar SPI) — Rp72.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/2sP4phs)
+    
+    Sensor Jarak VL53L0X (I2C)
+    VL53L0X (Sensor Jarak) — Rp38.400
+    [🛍️ Beli di Shopee](https://id.shp.ee/FcbxrhH)
+
+    Amplifier MAX98357A (I2S ke speaker)
+    MAX98357A (I2S Amplifier) — Rp48.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/FbnP6JJ)
+
+    Modul Mikrofon INMP441 (I2S Digital Microphone)
+    Modul Mikrofon INMP441 — Rp48.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/wpumiRi)
+
+    ESP32-S3 N16R8 (Microcontroller utama)
+    ESP32-S3 — Rp135.000
+    [🛍️ Beli di Shopee](https://id.shp.ee/4NPSa1j)
+
 
 ### Konfigurasi Penting dalam Kode:
 
