@@ -57,68 +57,69 @@ Proyek ini menggunakan berbagai komponen untuk membuat sistem ESP32 S3 berbasis 
 
 Berikut adalah komponen dan paket yang saya jual untuk mendukung proyek Mogi dan robotik lainnya. Semua tersedia di Shopee!
 
-🎁 Paket Lengkap
-    
-    Mogi 1 Set Komplit — Rp693.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/2Rjjf44)
+## 🛒 Produk yang Dijual
 
-🔌 Komponen Elektronik
+Berikut komponen dan paket yang saya jual untuk mendukung proyek Mogi dan robotik lainnya. Semua tersedia di Shopee!
 
-    PCB Modifikasi — Rp57.600
-    [🛍️ Beli di Shopee](https://id.shp.ee/62QwaRH)
+---
 
-    Pengisi daya USB-C 2S Li-Ion Charger (8.4V, 2A)
-    Pengisi Daya USB-C 2S Li-Ion (8.4V, 2A) — Rp20.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/8RfSoH6)
+### 🎁 Paket Lengkap
 
-    BMS 2S Balanced 20A (untuk proteksi pengisian baterai Li-Ion)
-    BMS 2S — Rp28.800
-    [🛍️ Beli di Shopee](https://id.shp.ee/VtpTVV9)
+- **Mogi 1 Set Komplit — Rp693.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/2Rjjf44)
 
-    Step-down MP1584EN (Buck converter 3.3V / 5V)
-    Step-down Fix 5V — Rp10.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/SeKhZQU)
+---
 
-🔋 Daya dan Motor
-    
-    2x Baterai 18650 (2S, 7.4V)
-    2x Baterai 18650 — Rp90.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/4xuLygX)
+### 🔌 Komponen Elektronik
 
-    L298N Mini Motor Driver (kendali 2 motor DC)
-    L298N Mini — Rp15.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/nmuyd1h)
+- **PCB Modifikasi — Rp57.600**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/62QwaRH)
 
-    2 Set Motor Gearbox N20 + Roda
-    2 Set Motor Gearbox N20 + Roda — Rp90.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/xnJPSey)
+- **Pengisi Daya USB-C 2S Li-Ion (8.4V, 2A) — Rp20.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/8RfSoH6)
 
-    Servo
-    Servo sg90 — Rp28.800
-    [🛍️ Beli di Shopee](https://id.shp.ee/nawvqaX)
+- **BMS 2S Balanced 20A — Rp28.800**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/VtpTVV9)
 
-🔭 Sensor dan Tampilan:
-    
-    OLED GC9A01 (SPI, layar bundar)
-    GC9A01 (Layar Bundar SPI) — Rp72.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/2sP4phs)
-    
-    Sensor Jarak VL53L0X (I2C)
-    VL53L0X (Sensor Jarak) — Rp38.400
-    [🛍️ Beli di Shopee](https://id.shp.ee/FcbxrhH)
+- **Step-down MP1584EN (Fix 5V) — Rp10.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/SeKhZQU)
 
-    Amplifier MAX98357A (I2S ke speaker)
-    MAX98357A (I2S Amplifier) — Rp48.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/FbnP6JJ)
+---
 
-    Modul Mikrofon INMP441 (I2S Digital Microphone)
-    Modul Mikrofon INMP441 — Rp48.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/wpumiRi)
+### 🔋 Daya dan Motor
 
-    ESP32-S3 N16R8 (Microcontroller utama)
-    ESP32-S3 — Rp135.000
-    [🛍️ Beli di Shopee](https://id.shp.ee/4NPSa1j)
+- **2x Baterai 18650 (2S, 7.4V) — Rp90.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/4xuLygX)
 
+- **L298N Mini Motor Driver — Rp15.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/nmuyd1h)
+
+- **2 Set Motor Gearbox N20 + Roda — Rp90.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/xnJPSey)
+
+- **Servo SG90 — Rp28.800**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/nawvqaX)
+
+---
+
+### 🔭 Sensor dan Tampilan
+
+- **GC9A01 (Layar Bundar SPI) — Rp72.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/2sP4phs)
+
+- **VL53L0X (Sensor Jarak I2C) — Rp38.400**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/FcbxrhH)
+
+- **MAX98357A (I2S Amplifier) — Rp48.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/FbnP6JJ)
+
+- **Modul Mikrofon INMP441 (I2S) — Rp48.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/wpumiRi)
+
+- **ESP32-S3 N16R8 — Rp135.000**  
+  [🛍️ Beli di Shopee](https://id.shp.ee/4NPSa1j)
+
+---
 
 ### Konfigurasi Penting dalam Kode:
 
