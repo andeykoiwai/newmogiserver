@@ -80,6 +80,7 @@ Berikut adalah komponen dan paket yang saya jual untuk mendukung proyek Mogi dan
     [🛍️ Beli di Shopee](https://id.shp.ee/SeKhZQU)
 
 🔋 Daya dan Motor
+    
     2x Baterai 18650 (2S, 7.4V)
     2x Baterai 18650 — Rp90.000
     [🛍️ Beli di Shopee](https://id.shp.ee/4xuLygX)
@@ -97,6 +98,7 @@ Berikut adalah komponen dan paket yang saya jual untuk mendukung proyek Mogi dan
     [🛍️ Beli di Shopee](https://id.shp.ee/nawvqaX)
 
 🔭 Sensor dan Tampilan:
+    
     OLED GC9A01 (SPI, layar bundar)
     GC9A01 (Layar Bundar SPI) — Rp72.000
     [🛍️ Beli di Shopee](https://id.shp.ee/2sP4phs)
