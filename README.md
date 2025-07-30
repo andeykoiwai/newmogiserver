@@ -65,58 +65,58 @@ Berikut komponen dan paket yang saya jual untuk mendukung proyek Mogi dan roboti
 
 ### 🎁 Paket Lengkap
 
-- **Mogi 1 Set Komplit — Rp693.000**  
+- **Mogi 1 Set Komplit — Rp1,083,000**  
   [🛍️ Beli di Shopee](https://id.shp.ee/2Rjjf44)
 
 ---
 
 ### 🔌 Komponen Elektronik
 
-- **PCB Modifikasi — Rp57.600**  
+- **PCB Modifikasi — Rp60.000**  
   [🛍️ Beli di Shopee](https://id.shp.ee/62QwaRH)
 
-- **Pengisi Daya USB-C 2S Li-Ion (8.4V, 2A) — Rp20.000**  
+- **Pengisi Daya USB-C 2S Li-Ion (8.4V, 2A) — Rp19.250**  
   [🛍️ Beli di Shopee](https://id.shp.ee/8RfSoH6)
 
-- **BMS 2S Balanced 20A — Rp28.800**  
+- **BMS 2S Balanced 20A — Rp23.625**  
   [🛍️ Beli di Shopee](https://id.shp.ee/VtpTVV9)
 
-- **Step-down MP1584EN (Fix 5V) — Rp10.000**  
+- **Step-down MP1584EN (Fix 5V) — Rp10.500**  
   [🛍️ Beli di Shopee](https://id.shp.ee/SeKhZQU)
 
 ---
 
 ### 🔋 Daya dan Motor
 
-- **2x Baterai 18650 (2S, 7.4V) — Rp90.000**  
+- **2x Baterai 18650 (2S, 7.4V) — Rp157.500**  
   [🛍️ Beli di Shopee](https://id.shp.ee/4xuLygX)
 
-- **L298N Mini Motor Driver — Rp15.000**  
+- **L298N Mini Motor Driver — Rp10.500**  
   [🛍️ Beli di Shopee](https://id.shp.ee/nmuyd1h)
 
-- **2 Set Motor Gearbox N20 + Roda — Rp90.000**  
+- **2 Set Motor Gearbox N20 + Roda — Rp105.000**  
   [🛍️ Beli di Shopee](https://id.shp.ee/xnJPSey)
 
-- **Servo SG90 — Rp28.800**  
+- **Servo SG90 — Rp26.250**  
   [🛍️ Beli di Shopee](https://id.shp.ee/nawvqaX)
 
 ---
 
 ### 🔭 Sensor dan Tampilan
 
-- **GC9A01 (Layar Bundar SPI) — Rp72.000**  
+- **GC9A01 (Layar Bundar SPI) — Rp140.000**  
   [🛍️ Beli di Shopee](https://id.shp.ee/2sP4phs)
 
-- **VL53L0X (Sensor Jarak I2C) — Rp38.400**  
+- **VL53L0X (Sensor Jarak I2C) — Rp59.000**  
   [🛍️ Beli di Shopee](https://id.shp.ee/FcbxrhH)
 
-- **MAX98357A (I2S Amplifier) — Rp48.000**  
+- **MAX98357A (I2S Amplifier) — Rp54.250**  
   [🛍️ Beli di Shopee](https://id.shp.ee/FbnP6JJ)
 
-- **Modul Mikrofon INMP441 (I2S) — Rp48.000**  
+- **Modul Mikrofon INMP441 (I2S) — Rp59.500**  
   [🛍️ Beli di Shopee](https://id.shp.ee/wpumiRi)
 
-- **ESP32-S3 N16R8 — Rp135.000**  
+- **ESP32-S3 N16R8 — Rp262.500**  
   [🛍️ Beli di Shopee](https://id.shp.ee/4NPSa1j)
 
 ---
