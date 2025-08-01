@@ -1,3 +1,24 @@
+/*
+  🤖 MOGI - Mini AI Robot Project
+  https://github.com/andeykoiwai/newmogiserver
+
+  🤝 Lisensi dan Donasi
+  Proyek ini GRATIS untuk pembelajaran dan pengembangan.
+
+  Jika kamu merasa proyek ini bermanfaat, dukung kami:
+
+  ☕ Donasi via BCA
+  No. Rekening : 5745008264
+  Atas Nama    : Dewi Lestari
+  QRIS         : lihat gambar di /Gambar/Qiris.jpg
+
+  📫 Kontak:
+  Email    : andeykoiwai@gmail.com
+  WhatsApp : +62 899 8210 011
+
+  © 2025 Andey Koiwai
+*/
+
 #include "FileHandler.h"
 
 FileHandler::FileHandler() {

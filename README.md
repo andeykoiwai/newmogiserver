@@ -188,6 +188,7 @@ Jika kamu merasa proyek ini bermanfaat, kamu bisa memberi dukungan:
 No. Rekening: **5745008264**
 Atas Nama: **Dewi Lestari**
 
+![QRIS BCA untuk dukung MOGI](./Gambar/Qiris.jpg)
 📫 Hubungi via email jika ingin kolaborasi, kontribusi, atau konsultasi teknis.
 
 **Copyright © 2025 Andey Koiwai.**
@@ -201,6 +202,7 @@ Atas Nama: **Dewi Lestari**
 * WhatsApp: +62 899 8210 011  
   ![QR WhatsApp](./Gambar/api.qrserver.png)  
   [Klik untuk chat langsung](https://wa.me/628998210011)  
+* [Klik di sini untuk gabung Discord MOGI](https://discord.gg/66TtRqUDF4)
 * Facebook: Takako Andey  
 * TikTok: [@mogirobotic](https://www.tiktok.com/@mogirobotic)  
 * YouTube: [@mogirobotik](https://www.youtube.com/@mogirobotik)

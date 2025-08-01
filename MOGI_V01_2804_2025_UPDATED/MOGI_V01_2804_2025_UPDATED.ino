@@ -1,4 +1,24 @@
 /*
+
+  🤖 MOGI - Mini AI Robot Project
+  https://github.com/andeykoiwai/newmogiserver
+
+  🤝 Lisensi dan Donasi
+  Proyek ini GRATIS untuk pembelajaran dan pengembangan.
+
+  Jika kamu merasa proyek ini bermanfaat, dukung kami:
+
+  ☕ Donasi via BCA
+  No. Rekening : 5745008264
+  Atas Nama    : Dewi Lestari
+  QRIS         : lihat gambar di /Gambar/Qiris.jpg
+
+  📫 Kontak:
+  Email    : andeykoiwai@gmail.com
+  WhatsApp : +62 899 8210 011
+
+  © 2025 Andey Koiwai
+
 Mogi Robot - Main Control Program
 ===============================
 
@@ -158,6 +178,22 @@ void setup() {
   // setup_robot_movement(); // Pindahkan ini ke paling atas
   delay(5000);
   Serial.begin(115200);
+  Serial.println("MOGI - Mini AI Robot Project");
+  Serial.println("https://github.com/andeykoiwai/newmogiserver");
+  Serial.println("");
+  Serial.println("Lisensi dan Donasi");
+  Serial.println("Proyek ini GRATIS untuk pembelajaran dan pengembangan.");
+  Serial.println("Donasi via BCA:");
+  Serial.println("  Rekening : 5745008264");
+  Serial.println("  Nama     : Dewi Lestari");
+  Serial.println("  QRIS     : lihat /Gambar/Qiris.jpg");
+  Serial.println("");
+  Serial.println("Kontak:");
+  Serial.println("  Email    : andeykoiwai@gmail.com");
+  Serial.println("  WhatsApp : +62 899 8210 011");
+  Serial.println("");
+  Serial.println("© 2025 Andey Koiwai");
+  delay(1000);
   ets_printf("Never Used Stack Size: %u\n", uxTaskGetStackHighWaterMark(NULL));
   
   // Disable robot movement di awal saat setup

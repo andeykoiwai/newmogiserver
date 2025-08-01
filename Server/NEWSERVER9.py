@@ -1,3 +1,20 @@
+# 🤖 MOGI - Mini AI Robot Project
+# https://github.com/andeykoiwai/newmogiserver
+#
+# 🤝 Lisensi dan Donasi
+# Proyek ini GRATIS untuk pembelajaran dan pengembangan.
+#
+# ☕ Donasi via BCA
+# No. Rekening : 5745008264
+# Atas Nama    : Dewi Lestari
+# QRIS         : lihat file Gambar/Qiris.jpg
+#
+# 📫 Kontak:
+# Email    : andeykoiwai@gmail.com
+# WhatsApp : +62 899 8210 011
+#
+# © 2025 Andey Koiwai
+
 from dotenv import load_dotenv
 load_dotenv()
 from flask import Flask, request, jsonify, send_from_directory, render_template_string, session, redirect, url_for
@@ -44,6 +61,21 @@ GROQ_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 # Gemini setup
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 GEMINI_MODEL = 'gemini-2.0-flash'
+
+def print_info():
+    print("🤖 MOGI - Mini AI Robot Project")
+    print("https://github.com/andeykoiwai/newmogiserver\n")
+    print("🤝 Lisensi dan Donasi")
+    print("Proyek ini GRATIS untuk pembelajaran dan pengembangan.")
+    print("☕ Donasi via BCA:")
+    print("  Rekening : 5745008264")
+    print("  Nama     : Dewi Lestari")
+    print("  QRIS     : lihat Gambar/Qiris.jpg\n")
+    print("📫 Kontak:")
+    print("  Email    : andeykoiwai@gmail.com")
+    print("  WhatsApp : +62 899 8210 011\n")
+    print("© 2025 Andey Koiwai")
+
 
 def call_gemini_ai(prompt):
     try:
@@ -1618,6 +1650,7 @@ def list_serials():
 
 if __name__ == '__main__':
     # Create databases if they don't exist
+    print_info()
     create_databases()
     
     port = 8888
