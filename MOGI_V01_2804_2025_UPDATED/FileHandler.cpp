@@ -47,14 +47,14 @@ void FileHandler::upload(String namafile, String url) {
   Serial.println("upload "+namafile+" to "+url);
 
   HTTPClient client;
-  client.setTimeout(10000);
+  client.setTimeout(15000);
   client.begin(url+"/uploadAudio");
   client.addHeader("Content-Type", "audio/wav");
   client.addHeader("Serial-Number", mogiConfig.serialNumber);
   client.addHeader("Device-Name", mogiConfig.name);
 
   int httpResponseCode = client.sendRequest("POST", &file, file.size());
-  delay(600);
+  // delay(600);
   Serial.print("httpResponseCode: ");
   Serial.println(httpResponseCode);
 
@@ -64,6 +64,7 @@ void FileHandler::upload(String namafile, String url) {
     Serial.println(response);
     Serial.println("====================      End      ====================");
     parseResponse(response);
+    delay(1000);
     file.close();
     client.end();
     uploadStatus = false;

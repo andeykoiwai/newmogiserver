@@ -815,12 +815,14 @@ def upload_audio():
                                 res.raise_for_status()
                                 server_user = res.json()['choices'][0]['message']['content']
                                 print(f"<< Jawaban dari GROQ: {server_user}")
+                                ai_cache_db.insert({'q': esp_user, 'a': server_user})
                             except Exception as e:
                                 print(f"GROQ gagal: {e}, fallback ke Gemini...")
                                 try:
                                     # Fallback ke Gemini
                                     server_user = call_gemini_ai('jawab dengan singkat, ' + esp_user)
                                     print(f"<< Jawaban dari Gemini: {server_user}")
+                                    ai_cache_db.insert({'q': esp_user, 'a': server_user})
                                 except Exception as e2:
                                     print(f"Gemini gagal: {e2}, fallback ke cache...")
                                     server_user = "Maaf, saya tidak dapat menjawab pertanyaanmu. Silakan coba lagi nanti. Token Habis"
