@@ -1118,12 +1118,16 @@ void checkObstacle() {
       obstacleDetected = true;
       myServo.write(45);
       motorTurnRight();
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      motorStop();
     } else if (jarak < 300 && motorAktif) {
       // Obstacle jauh - maju pelan
       eyes.anim_confused();
       obstacleDetected = false;
       myServo.write(90);
       motorForward();
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      motorStop();
     } else {
       // Tidak ada obstacle - normal
       obstacleDetected = false;
