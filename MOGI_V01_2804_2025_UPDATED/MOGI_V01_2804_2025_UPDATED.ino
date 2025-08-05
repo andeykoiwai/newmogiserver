@@ -53,7 +53,8 @@ sama di tambah juga di webnya agar nilai toch nya bisa di atur dari sana
 #include "WebConfig.h"
 #include "Microphone.h"
 #include "FileHandler.h"
-
+#include "MogiPerasaan.h"
+#include "NeuralMemory.h"
 //#----- calling mogi ------
 #define EIDSP_QUANTIZE_FILTERBANK   0
 #include <MOGIONLINE_inferencing.h>
@@ -106,6 +107,9 @@ Servo myServo;
 
 //pin battery
 #define PIN_BATTERY 3
+// Variabel global neuron
+Neuron n1, n2, n3, n4;
+float emosi_output = 0.0;
 // Touch sensor - PERBAIKAN THRESHOLD
 #define TOUCH_PIN T7
 // #define HARD_TOUCH_THRESHOLD 5000   // Threshold untuk sentuhan sangat keras
@@ -282,6 +286,19 @@ void setup() {
   }
   //draw battery level
   analogReadResolution(12);
+
+  // Variabel global neuron dan curiosity
+  if (bacaStateNeural(n1, n2, n3, n4, curiosity, emosi_output)) {
+    Serial.println("State neural berhasil di-load dari FFat!");
+  } else {
+    n1 = {0, 0.8, 0.1};
+    n2 = {0, 1.2, -0.1};
+    n3 = {0, 0.5, 0.0};
+    n4 = {0, 1.0, 0.0};
+    curiosity = 0.0;
+    emosi_output = 0.0;
+    Serial.println("State neural default digunakan.");
+  }
 }
 
 // Modifikasi untuk loop() function
@@ -332,58 +349,39 @@ void eyeAnimationTask(void *pvParameters) {
       int bat = persenBaterai(vbatt);
       eyes.setBatteryLevel(bat);
       Serial.printf("VBAT: %.2fV (%d%%)\n", vbatt, bat);
+      // Update n3.input dengan persen baterai (0-100 dinormalisasi ke 0.0-1.0)
+      n3.input = mapf((float)bat, 0.0, 100.0, 0.0, 1.0);
     }
-    // off sementara
-    /*
-    static unsigned long lastMoodChange = 0;
-    if (millis() - lastMoodChange > 50000) { // Ganti mood setiap 10 detik
-      lastMoodChange = millis();
-      int mood = random(4); // Pilih mood acak
-      
+    // Tambahkan update mood dari neuron setiap 5 detik
+    static unsigned long lastMoodUpdate = 0;
+    if (millis() - lastMoodUpdate > 5000) {
+      lastMoodUpdate = millis();
+      // Update input neuron dari sensor (contoh, bisa disesuaikan)
+      // n1.input = ...; n2.input = ...; n3.input = ...; n4.input = ...;
+      // Untuk demo, gunakan nilai yang sudah di-load
+      float hasil = (n1.aktifasi() + n2.aktifasi() + n3.aktifasi() + n4.aktifasi()) / 4.0;
+      Emosi mood = interpretasiPerasaan(hasil);
+      // Set mood ke mata robot
       switch(mood) {
-        case 0:
-          eyes.setMood(DEFAULT);
-          textAnimasi(internet_config.getMogiConfig().name, internet_config.getMogiConfig().textColor);
-          break;
-        case 1:
-          eyes.setMood(TIRED);
-          if(animasidansuara){
-            playMusic("sedih.mp3");
-            textAnimasi("Hiks", internet_config.getMogiConfig().textColor);
-          }
-          break;
-        case 2:
-          eyes.setMood(ANGRY);
-          if(animasidansuara){
-            playMusic("marah.mp3");
-            textAnimasi("hemm", internet_config.getMogiConfig().textColor);
-          }
-          break;
-        case 3:
+        case SENANG:
           eyes.setMood(HAPPY);
-          if(animasidansuara){
-            playMusic("geli.mp3");
-            textAnimasi("Geli", internet_config.getMogiConfig().textColor);
-          }
-          break;
-      }
-      
-      // Trigger animasi acak
-      if(random(100) > 70) {
-        if(random(2)) {
-          eyes.anim_confused();
-          if(animasidansuara){
-            playMusic("kaget.mp3");
-          }
-        } else {
           eyes.anim_laugh();
-          if(animasidansuara){
-            playMusic("geli.mp3");
-          }
-        }
+          break;
+        case SEDIH:
+          eyes.setMood(TIRED);
+          break;
+        case MARAH:
+          eyes.setMood(ANGRY);
+          break;
+        case CEMAS:
+          eyes.anim_confused();
+          break;
+        case NETRAL:
+        default:
+          eyes.setMood(DEFAULT);
+          break;
       }
     }
-    */
     vTaskDelay(20 / portTICK_PERIOD_MS); // Delay untuk mengontrol FPS
   }
 }
@@ -1165,6 +1163,7 @@ void checkTouch() {
   // Pastikan kedua nilai dalam tipe data yang sama
   int touchValue = (int)touchRead(TOUCH_PIN);  // Cast ke int
   int touchDifference = abs(touchBaseline - touchValue);  // Sekarang keduanya int
+  
   if (modeSeeTouch) {
     textAnimasi("toucthDiff "+String(touchDifference), TFT_GREEN);
   }
@@ -1312,6 +1311,10 @@ void robotAngry() {
   // Cegah overlap
   if (isAngry) return;
 
+  // Kurangi n2.input saat marah
+  n2.input -= 0.3;
+  if (n2.input < 0.0) n2.input = 0.0;
+
   eyes.setMood(ANGRY);
   eyes.anim_confused();
   textAnimasi("Jangan kasar ", TFT_RED);
@@ -1355,6 +1358,10 @@ void robotSad() {
   // Cegah overlap
   if (isSad) return;
 
+  // Kurangi n2.input saat sedih
+  n2.input -= 0.2;
+  if (n2.input < 0.0) n2.input = 0.0;
+
   eyes.setMood(TIRED);
   eyes.anim_confused();
   textAnimasi("Aduh, sakit... ", TFT_BLUE);
@@ -1397,6 +1404,10 @@ void robotSmile() {
   if (!animasidansuara) return; // Hanya tersenyum jika animasi dan suara aktif
   // Cegah overlap
   if (isSmiling) return;
+
+  // Tambah n2.input saat diusap lembut
+  n2.input += 0.1;
+  if (n2.input > 1.0) n2.input = 1.0;
 
   eyes.setMood(HAPPY);
   eyes.anim_laugh();
