@@ -104,6 +104,8 @@ Servo myServo;
 #define IN3 47
 #define IN4 21
 
+//pin battery
+#define PIN_BATTERY 3
 // Touch sensor - PERBAIKAN THRESHOLD
 #define TOUCH_PIN T7
 // #define HARD_TOUCH_THRESHOLD 5000   // Threshold untuk sentuhan sangat keras
@@ -278,6 +280,8 @@ void setup() {
     // Disable robot movement jika belum ada koneksi
     enableRobotMovement(false);
   }
+  //draw battery level
+  analogReadResolution(12);
 }
 
 // Modifikasi untuk loop() function
@@ -318,7 +322,17 @@ void textAnimasi(String text, uint16_t color){
 // Task untuk animasi mata
 void eyeAnimationTask(void *pvParameters) {
   while (1) {
+    
     eyes.update();
+    static unsigned long lastBatRead = 0;
+    if (millis() - lastBatRead > 2000) { // setiap 2 detik
+      lastBatRead = millis();
+
+      float vbatt = bacaTeganganBaterai();
+      int bat = persenBaterai(vbatt);
+      eyes.setBatteryLevel(bat);
+      Serial.printf("VBAT: %.2fV (%d%%)\n", vbatt, bat);
+    }
     // off sementara
     /*
     static unsigned long lastMoodChange = 0;
@@ -1545,4 +1559,21 @@ void motorTurnRightSlow() {
   
   // Implementasi PWM untuk belok lambat bisa ditambahkan di sini
   motorTurnRight();
+}
+
+float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+float bacaTeganganBaterai() {
+  int adc = analogRead(3); // GPIO3
+  float v_adc = (adc / 4095.0) * 3.3; // ADC 12-bit
+  float v_batt = v_adc * 3.0;         // faktor divider 20k:10k
+  return v_batt;
+}
+
+int persenBaterai(float v_batt) {
+  float persen = mapf(v_batt, 6.6, 8.4, 0, 100);
+  persen = constrain(persen, 0, 100);
+  return (int)persen;
 }

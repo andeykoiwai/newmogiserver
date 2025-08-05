@@ -138,22 +138,25 @@ private:
     
     // Time configuration function
     void configureTime() {
-        if (WiFi.status() == WL_CONNECTED && !timeConfigured) {
-            // Configure NTP and timezone properly for Jakarta (GMT+7)
-            configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-            
-            // Force an initial time sync
-            struct tm timeinfo;
-            if (!getLocalTime(&timeinfo)) {
-                Serial.println("Failed to obtain time");
-            } else {
-                Serial.println("Time synchronized");
-                timeConfigured = true;
-            }
-            
-            updateTimeString();
+        if (WiFi.status() == WL_CONNECTED && !timeConfigured && isInternetAvailable()) {
+          configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+          struct tm timeinfo;
+      
+          unsigned long start = millis();
+          while (!getLocalTime(&timeinfo) && millis() - start < 3000) {
+            delay(100); // tunggu maksimal 3 detik
+          }
+      
+          if (getLocalTime(&timeinfo)) {
+            timeConfigured = true;
+            updateTimeString(); // <<< ini yang penting
+            Serial.println("Sinkronisasi waktu berhasil.");
+          } else {
+            Serial.println("Gagal mendapatkan waktu dari NTP! Lewat timeout.");
+          }
         }
     }
+      
     
     // Update the time string
     void updateTimeString() {
@@ -186,17 +189,20 @@ private:
         }
         
         int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
         int timeFontSize = 2;
         int dayFontSize = 2;
+        int batteryFontSize = 1;  // font size untuk info baterai (sangat kecil)
         
-        // Calculate positions
-        int timeYPos = min(eyeLy, eyeRy) - 30;  // Time position
-        int dayYPos = timeYPos - 20;           // Day name position
+        // Posisi untuk layar bundar - lebih ke tengah agar tidak terpotong
+        int timeYPos = min(eyeLy, eyeRy) - 35;  // Time position
+        int dayYPos = timeYPos - 18;            // Day name position
         
-        // Make sure it's within screen bounds
-        if (dayYPos < 5) {
-            dayYPos = 5;
-            timeYPos = dayYPos + 15;
+        // Pastikan posisi dalam area bundar yang aman
+        int radius = min(screenWidth, screenHeight) / 2;
+        if (dayYPos < centerY - radius + 20) {
+            dayYPos = centerY - radius + 20;
+            timeYPos = dayYPos + 18;
         }
         
         // Save current text settings
@@ -204,23 +210,135 @@ private:
         uint8_t oldTextSize = sprite.textsize;
         uint8_t oldTextDatum = sprite.textdatum;
         
-        // Draw combined day and time
+        // Draw day name
         sprite.setTextColor(TFT_WHITE, TFT_BLACK);
         sprite.setTextSize(dayFontSize);
         sprite.setTextDatum(TC_DATUM); // Top Center alignment
-        sprite.drawString(dayString, centerX, dayYPos);
         
-        // Draw the time with GMT+7
+        // Hitung lebar teks hari
+        int dayTextWidth = sprite.textWidth(dayString);
+
+        // Gambar teks hari di tengah
+        sprite.drawString(dayString, centerX, dayYPos);
+
+        // Gambar info baterai di kanan nama hari dengan font lebih kecil
+        // Khusus untuk layar bundar, pastikan tidak keluar dari area
+        if (batteryLevel >= 0) {
+            char buffer[10];  // Buffer lebih kecil
+            sprintf(buffer, "BAT %d%%", batteryLevel);
+
+            // Posisi x berada setelah tulisan hari dengan jarak optimal untuk layar bundar
+            int batX = centerX + (dayTextWidth / 2) + 8;
+            int batY = dayYPos + 1; // alignment yang lebih baik
+            
+            // Pastikan teks baterai tidak keluar dari area bundar
+            int batteryTextWidth = 6 * batteryFontSize * strlen(buffer); // estimasi lebar teks
+            int distanceFromCenter = sqrt(pow(batX + batteryTextWidth/2 - centerX, 2) + pow(batY - centerY, 2));
+            
+            if (distanceFromCenter + batteryTextWidth/2 < radius - 10) {
+                sprite.setTextColor(TFT_CYAN, TFT_BLACK);  // warna cyan untuk kontras
+                sprite.setTextSize(batteryFontSize);       // font sangat kecil
+                sprite.setTextDatum(TL_DATUM);             // kiri atas
+                sprite.drawString(buffer, batX, batY);
+            }
+        }
+
+        // Draw the time with GMT+7 - pastikan dalam area bundar
         sprite.setTextSize(timeFontSize);
+        sprite.setTextColor(TFT_WHITE, TFT_BLACK);
+        sprite.setTextDatum(TC_DATUM);
         char fullTimeString[25];
         sprintf(fullTimeString, "%s %s", timeString, gmtString);
-        sprite.drawString(fullTimeString, centerX, timeYPos);
+        
+        // Cek apakah waktu dalam area bundar yang aman
+        int timeTextWidth = sprite.textWidth(fullTimeString);
+        if (timeTextWidth/2 < radius - 20) {
+            sprite.drawString(fullTimeString, centerX, timeYPos);
+        } else {
+            // Jika terlalu panjang, tampilkan tanpa GMT
+            sprite.drawString(timeString, centerX, timeYPos);
+        }
         
         // Restore previous text settings
         sprite.setTextColor(oldTextColor);
         sprite.setTextSize(oldTextSize);
         sprite.setTextDatum(oldTextDatum);
     }   
+    // Draw battery level
+    void drawBattery() {
+        if (batteryLevel < 0) return; // tidak tampil
+    
+        // Posisi baterai disesuaikan untuk layar bundar
+        // Menggunakan koordinat polar untuk posisi yang lebih optimal
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
+        int radius = min(screenWidth, screenHeight) / 2;
+        
+        // Posisi di area yang aman dalam lingkaran (kanan atas)
+        int x = centerX + (radius * 0.6);  // 60% dari radius ke kanan
+        int y = centerY - (radius * 0.7);  // 70% dari radius ke atas
+        
+        int width = 24;            // lebar optimal untuk layar bundar
+        int height = 10;           // tinggi optimal
+        int tipWidth = 2;          // lebar ujung baterai
+        int tipHeight = 4;         // tinggi ujung baterai
+        // Pastikan posisi ikon berada dalam area bundar yang aman
+        int distanceFromCenter = sqrt(pow(x - centerX, 2) + pow(y - centerY, 2));
+        if (distanceFromCenter + max(width, height) > radius - 10) {
+            // Jika terlalu dekat dengan tepi, pindah ke posisi alternatif
+            x = centerX + (radius * 0.5);
+            y = centerY - (radius * 0.6);
+        }
+    
+        // Gambar outline baterai utama dengan corner radius untuk estetika
+        sprite.drawRoundRect(x, y, width, height, 2, TFT_WHITE);
+        
+        // Gambar ujung baterai (kepala) dengan posisi tengah vertikal
+        sprite.fillRoundRect(x + width, y + (height - tipHeight)/2, tipWidth, tipHeight, 1, TFT_WHITE);
+    
+        // Hitung panjang isi berdasarkan level baterai
+        int filledWidth = map(batteryLevel, 0, 100, 0, width - 4);  // -4 untuk padding
+        
+        // Tentukan warna berdasarkan level baterai dengan gradasi yang smooth
+        uint16_t fillColor;
+        if (batteryLevel < 15) {
+            fillColor = TFT_RED;        // Merah untuk level sangat rendah
+        } else if (batteryLevel < 30) {
+            fillColor = TFT_ORANGE;     // Orange untuk level rendah
+        } else if (batteryLevel < 60) {
+            fillColor = TFT_YELLOW;     // Kuning untuk level sedang
+        } else {
+            fillColor = TFT_GREEN;      // Hijau untuk level baik
+        }
+
+        // Isi baterai dengan corner radius
+        if (filledWidth > 2) {
+            sprite.fillRoundRect(x + 2, y + 2, filledWidth, height - 4, 1, fillColor);
+        }
+    
+        // Tampilkan persentase di bawah ikon dengan font sangat kecil untuk layar bundar
+        sprite.setTextColor(TFT_WHITE, TFT_BLACK);
+        sprite.setTextSize(1);  // font size 1 (sangat kecil untuk layar bundar)
+        sprite.setTextDatum(TC_DATUM); // tengah atas
+        
+        char buffer[5];  // Buffer lebih kecil
+        sprintf(buffer, "%d%%", batteryLevel);
+        
+        // Posisi teks di bawah ikon dengan jarak minimal
+        int textY = y + height + 3;
+        
+        // Pastikan teks juga dalam area bundar yang aman
+        int textDistanceFromCenter = sqrt(pow(x + width/2 - centerX, 2) + pow(textY - centerY, 2));
+        if (textDistanceFromCenter < radius - 15) {
+            sprite.drawString(buffer, x + width/2, textY);
+        }
+    }
+    bool isInternetAvailable() {
+        WiFiClient client;
+        return client.connect("google.com", 80);
+    }
+      
+    
 
 public:
     uint16_t MAINCOLOR = 0x17bc;
@@ -310,6 +428,13 @@ public:
     unsigned long laughAnimationTimer = 0;
     int laughAnimationDuration = 500;
     bool laughToggle = 1;
+
+    //update battery level
+    int batteryLevel = -1; // -1 artinya tidak ditampilkan
+
+    void setBatteryLevel(int level) {
+        batteryLevel = constrain(level, 0, 100);
+    }
 
     void setMainColor(uint16_t color) {
         MAINCOLOR = color;
@@ -867,6 +992,7 @@ public:
         if (displayText.length() > 0) {
             drawWrappedText();
         }
+        drawBattery();
     }
 };
 
