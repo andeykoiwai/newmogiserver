@@ -110,11 +110,9 @@ Servo myServo;
 // Variabel global neuron
 Neuron n1, n2, n3, n4;
 float emosi_output = 0.0;
+unsigned long lastSave = 0;
 // Touch sensor - PERBAIKAN THRESHOLD
 #define TOUCH_PIN T7
-// #define HARD_TOUCH_THRESHOLD 5000   // Threshold untuk sentuhan sangat keras
-// #define NORMAL_TOUCH_THRESHOLD 4000 // Threshold untuk sentuhan normal
-// #define GENTLE_TOUCH_THRESHOLD 1000  // Threshold untuk sentuhan lembut
 int HARD_TOUCH_THRESHOLD = 5000;
 int NORMAL_TOUCH_THRESHOLD = 4000;
 int GENTLE_TOUCH_THRESHOLD = 1000;
@@ -247,9 +245,7 @@ void setup() {
     } else {
       eyes.setTimeDisplay(false);
     }
-    eyes.setIdleMode(true, 5, 3);     // Gerakan idle setiap 5±3 detik
-    // eyes.setText("Tunggu Sebentar");
-    // Ganti pengecekan file mp3 berdasarkan alias
+    eyes.setIdleMode(true, 5, 3);    
     String namaFileMp3 = internet_config.getMp3FilenameByAlias("opening"); // Ganti "Nama Alias MP3" sesuai alias yang diinginkan
     if (namaFileMp3 != "" && FFat.exists("/" + namaFileMp3)) {
       playMusic(namaFileMp3);
@@ -259,8 +255,6 @@ void setup() {
       if(endplaying==namaFileMp3){
         // delay(1000);
         eyes.setText("tunggu 5 detik lagi ya", internet_config.getMogiConfig().textColor);
-        // setup_robot_movement();
-        // eyes.setText(internet_config.getMogiConfig().name, internet_config.getMogiConfig().textColor);
         xTaskCreate(callingMogi, "Mogi Inference Task", 4096 , NULL, 1, NULL);
         setup_robot_movement();
         animasidansuara = true;
@@ -278,7 +272,7 @@ void setup() {
     }
   }
   else{
-    // deteksi awalan belum terinstall
+    
     eyes.setPosition(N);
     eyes.setText("untuk pertamakali cari wifi mogi, setelah konek ke wifi mogi, masuk ke browser 192.168.4.1 jika terkoneksi IP "+ WiFi.localIP().toString() +" upload file di browser dengan mengetik ip ini");
     // Disable robot movement jika belum ada koneksi
@@ -291,10 +285,10 @@ void setup() {
   if (bacaStateNeural(n1, n2, n3, n4, curiosity, emosi_output)) {
     Serial.println("State neural berhasil di-load dari FFat!");
   } else {
-    n1 = {0, 0.8, 0.1};
-    n2 = {0, 1.2, -0.1};
-    n3 = {0, 0.5, 0.0};
-    n4 = {0, 1.0, 0.0};
+    n1 = {0, 1.0, 0.3};
+    n2 = {0, 1.1, 0.25};
+    n3 = {0, 1.0, 0.0};
+    n4 = {0, 1.0, 0.3};
     curiosity = 0.0;
     emosi_output = 0.0;
     Serial.println("State neural default digunakan.");
@@ -342,24 +336,29 @@ void eyeAnimationTask(void *pvParameters) {
     
     eyes.update();
     static unsigned long lastBatRead = 0;
+    static float persen_baterai_smooth = 0.0;
+    static float hasil = 0.0;
     if (millis() - lastBatRead > 2000) { // setiap 2 detik
       lastBatRead = millis();
-
+      float smoothing_alpha = 0.2;
       float vbatt = bacaTeganganBaterai();
       int bat = persenBaterai(vbatt);
+      persen_baterai_smooth = (1.0 - smoothing_alpha) * persen_baterai_smooth + smoothing_alpha * bat;
       eyes.setBatteryLevel(bat);
       Serial.printf("VBAT: %.2fV (%d%%)\n", vbatt, bat);
       // Update n3.input dengan persen baterai (0-100 dinormalisasi ke 0.0-1.0)
-      n3.input = mapf((float)bat, 0.0, 100.0, 0.0, 1.0);
+      if (persen_baterai_smooth <= 20.0) {
+        n3.input = -1.0;
+      } else {
+        float delta = (persen_baterai_smooth - 20.0) * 0.01;
+        n3.input = constrain(-1.0 + delta, -1.0, 1.0); // agar aman
+      }
     }
     // Tambahkan update mood dari neuron setiap 5 detik
     static unsigned long lastMoodUpdate = 0;
     if (millis() - lastMoodUpdate > 5000) {
       lastMoodUpdate = millis();
-      // Update input neuron dari sensor (contoh, bisa disesuaikan)
-      // n1.input = ...; n2.input = ...; n3.input = ...; n4.input = ...;
-      // Untuk demo, gunakan nilai yang sudah di-load
-      float hasil = (n1.aktifasi() + n2.aktifasi() + n3.aktifasi() + n4.aktifasi()) / 4.0;
+      hasil = (n1.aktifasi() + n2.aktifasi() + n3.aktifasi() + n4.aktifasi()) / 4.0;
       Emosi mood = interpretasiPerasaan(hasil);
       // Set mood ke mata robot
       switch(mood) {
@@ -382,13 +381,24 @@ void eyeAnimationTask(void *pvParameters) {
           break;
       }
     }
+    //simpan neurall file 30 detik
+    if (millis() - lastSave > 30000) {
+      simpanStateNeural(n1, n2, n3, n4, curiosity, hasil);
+      lastSave = millis();
+    }
+    static unsigned long lastCuriosityDecay = 0;
+    if(millis() - lastCuriosityDecay > 300000){
+      //belum di tambah jika di senuh harusnya belum start
+      // waktu 5 menit sudah cukup untuk berkurang 5%
+      lastCuriosityDecay = millis();
+      n2.input *= 0.95;
+      n1.input *= 0.95;
+    }
     vTaskDelay(20 / portTICK_PERIOD_MS); // Delay untuk mengontrol FPS
   }
 }
 
-// command consol buat download dll / test
-// Modifikasi untuk commandConsol()
-// Modifikasi commandConsol untuk menambah perintah test mood
+
 void commandConsol(){
   if(Serial.available()){   
     tulisan = Serial.readStringUntil('\n');
@@ -405,22 +415,6 @@ void commandConsol(){
       delay(100);
       mic.startRecording();
     }
-    // else if(tulisan == "debug_touch"){
-    //   // Toggle debug mode untuk touch sensor
-    //   static bool debugMode = false;
-    //   debugMode = !debugMode;
-    //   if (debugMode) {
-    //     Serial.println("Debug touch sensor enabled");
-    //     xTaskCreate([](void*){ 
-    //       while(true) { 
-    //         debugTouchSensor(); 
-    //         vTaskDelay(100 / portTICK_PERIOD_MS); 
-    //       } 
-    //     }, "TouchDebug", 2048, NULL, 1, NULL);
-    //   } else {
-    //     Serial.println("Debug touch sensor disabled");
-    //   }
-    // }
     else if(tulisan == "calibrate_touch"){
       Serial.println("Memulai kalibrasi touch sensor...");
       calibrateTouchSensor();
@@ -488,49 +482,7 @@ void commandConsol(){
         enableRobotMovement(false);
         Serial.println("Robot movement disabled");
     }
-    // else if(tulisan == "downloadall") {
-    //     callmogi = false;
-    //     record_status = false;
-    //     enableRobotMovement(false);
-    //     eyes.setAutoblinker(false);
-    //     eyes.setIdleMode(false);
-    //     eyes.setText("Sedang Mendownload");
-    //     delay(200);
-        
-    //     const char* files[] = {
-    //         "nama.mp3",
-    //         "noserver.mp3", 
-    //         "nowifi.mp3",
-    //         "rekam.mp3",
-    //         "upload.mp3",
-    //         "download.mp3",
-    //         "error.mp3",
-    //         "geli.mp3",
-    //         "kaget.mp3",
-    //         "bosen.mp3",
-    //         "sedih.mp3",
-    //         "marah.mp3"
-    //     };
-        
-    //     for(const char* file : files) {
-    //         hendelfile.download(file, internet_config.getServerUrl());
-    //         delay(200);
-    //         eyes.setText("Download " + String(file));
-    //     }
-        
-    //     eyes.setText("Download Selesai");
-    //     Serial.println("Download Selesai");
-    //     delay(1000);
-    //     ESP.restart();
-    // }
-    // else if(tulisan == "mode_touch_on"){
-    //   modeseetoucth = true;
-    //   Serial.println("Mode touchDiff aktif!");
-    // }
-    // else if(tulisan == "mode_touch_off"){
-    //   modeseetoucth = false;
-    //   Serial.println("Mode touchDiff nonaktif!");
-    // }
+    
     else{
       Serial.println("Perintah tidak dikenali.");
       Serial.println("Perintah tambahan: robot_on, robot_off, debug_touch, test_smile, test_angry, test_sad, reset_mood");
@@ -566,10 +518,7 @@ void playByAlias(String alias) {
 }
 
 
-// Add this updated komunikasi_ESP_Server function to the client code
 
-// Updated komunikasi_ESP_Server function with English learning support
-  // Updated komunikasi_ESP_Server function dengan robot movement integration
 void komunikasi_ESP_Server(){
     String namaFileMp3 = "";
     ets_printf("Never Used Stack Size: %u\n", uxTaskGetStackHighWaterMark(NULL));
@@ -708,6 +657,8 @@ void komunikasi_ESP_Server(){
                         Serial.println("kembali memanggil mogi");
                         animasidansuara = true;
                         textanimasi = true;
+                        n4.input += 0.03;
+                        n4.input = constrain(n4.input, -1.0, 1.0);
                         // RE-ENABLE robot movement setelah selesai bicara
                         enableRobotMovement(true);
                       }
@@ -724,8 +675,8 @@ void komunikasi_ESP_Server(){
                   eyes.anim_confused();
                   eyes.setText("komunikasi terputus..", TFT_RED);
                   Serial.println("download error");
-                  // RE-ENABLE robot movement setelah error
-                  // enableRobotMovement(true);
+                  n4.input -= 0.01;
+                  n4.input = constrain(n4.input, -1.0, 1.0);
                 }
               }
             }
@@ -741,6 +692,8 @@ void komunikasi_ESP_Server(){
               Serial.println("upload error");
               // RE-ENABLE robot movement setelah error
               // enableRobotMovement(true);
+              n4.input -= 0.01;
+              n4.input = constrain(n4.input, -1.0, 1.0);
             }
           }
         }
@@ -756,6 +709,8 @@ void komunikasi_ESP_Server(){
         while(endplaying!=namaFileMp3){
           audio.loop();
         }
+        n4.input -= 0.01;
+        n4.input = constrain(n4.input, -1.0, 1.0);
         xTaskCreate(callingMogi, "Mogi Inference Task", 4096 , NULL, 1, NULL);
         // RE-ENABLE robot movement setelah error sound
         enableRobotMovement(true);
@@ -842,11 +797,10 @@ void callingMogi(void *pvParameters){
 
     // Hanya tampilkan prediksi untuk "mogi"
     for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
-//      ei_printf("    %s: ", result.classification[ix].label);
-//      ei_printf_float(result.classification[ix].value);
-//      ei_printf("\n");
       if (strcmp(result.classification[ix].label, "mogi") == 0){
         if(result.classification[ix].value > 0.7){
+          n1.input += 0.05;
+          n1.input = constrain(n1.input, -1.0, 1.0);
           callmogi = false;
           record_status = false;
           enableRobotMovement(false);
@@ -1050,34 +1004,6 @@ void robotMovementTask(void *parameter) {
   vTaskDelay(10 / portTICK_PERIOD_MS);
 }
 
-// Fungsi tambahan untuk debug touch sensor dengan mood
-// Modifikasi fungsi debugTouchSensor untuk menggunakan baseline
-// void debugTouchSensor() {
-//   static unsigned long lastDebugTime = 0;
-//   if (millis() - lastDebugTime > 1000) { // Debug setiap 1 detik
-//     lastDebugTime = millis();
-//     int touchValue = (int)touchRead(TOUCH_PIN);  // Cast to int
-//     int touchDifference = touchCalibrated ? abs(touchBaseline - touchValue) : 0;
-    
-//     Serial.print("Touch Debug - Raw: ");
-//     Serial.print(touchValue);
-//     Serial.print(", Baseline: ");
-//     Serial.print(touchBaseline);
-//     Serial.print(", Diff: ");
-//     Serial.print(touchDifference);
-//     Serial.print(", Caressed: ");
-//     Serial.print(isBeingCaressed ? "Yes" : "No");
-//     Serial.print(", Smiling: ");
-//     Serial.print(isSmiling ? "Yes" : "No");
-//     Serial.print(", Angry: ");
-//     Serial.print(isAngry ? "Yes" : "No");
-//     Serial.print(", Sad: ");
-//     Serial.print(isSad ? "Yes" : "No");
-//     Serial.print(", Hard Touch Count: ");
-//     Serial.println(hardTouchCount);
-//   }
-// }
-
 // Fungsi untuk mengecek obstacle
 void checkObstacle() {
   VL53L0X_RangingMeasurementData_t measure;
@@ -1167,31 +1093,7 @@ void checkTouch() {
   if (modeSeeTouch) {
     textAnimasi("toucthDiff "+String(touchDifference), TFT_GREEN);
   }
-  // Debug output yang lebih informatif
-  // static unsigned long lastDebugTime = 0;
-  // if (millis() - lastDebugTime > 1000) {
-  //   lastDebugTime = millis();
-  //   Serial.print("Touch - Raw: ");
-  //   Serial.print(touchValue);
-  //   Serial.print(", Baseline: ");
-  //   Serial.print(touchBaseline);
-  //   Serial.print(", Difference: ");
-  //   Serial.print(touchDifference);
-  //   Serial.print(", Status: ");
-    
-  //   if (touchDifference > HARD_TOUCH_THRESHOLD) {
-  //     Serial.println("VERY HARD");
-  //   } else if (touchDifference > NORMAL_TOUCH_THRESHOLD) {
-  //     Serial.println("HARD");
-  //   } else if (touchDifference > GENTLE_TOUCH_THRESHOLD) {
-  //     Serial.println("GENTLE");
-  //   } else {
-  //     Serial.println("NO TOUCH");
-  //   }
-
-  // }
-  
-  // Logika deteksi sentuhan berdasarkan perbedaan dari baseline
+ 
   if (touchDifference > HARD_TOUCH_THRESHOLD) {
     hardTouchCount++;
     Serial.println("Sentuhan sangat keras: Robot marah!");
@@ -1267,6 +1169,8 @@ void checkTouch() {
           Serial.println("Robot tersenyum karena diusap!");
           robotSmile();
           isSmiling = true;
+          n2.input += 0.02;
+          n2.input = constrain(n2.input, 0.0, 1.0); // supaya tidak lebih dari 1.0
         }
       }
     }
@@ -1312,8 +1216,7 @@ void robotAngry() {
   if (isAngry) return;
 
   // Kurangi n2.input saat marah
-  n2.input -= 0.3;
-  if (n2.input < 0.0) n2.input = 0.0;
+  n2.input -= 0.05;
 
   eyes.setMood(ANGRY);
   eyes.anim_confused();
@@ -1359,8 +1262,7 @@ void robotSad() {
   if (isSad) return;
 
   // Kurangi n2.input saat sedih
-  n2.input -= 0.2;
-  if (n2.input < 0.0) n2.input = 0.0;
+  n2.input -= 0.05;
 
   eyes.setMood(TIRED);
   eyes.anim_confused();
@@ -1576,6 +1478,7 @@ float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+// Fungsi membaca tegangan aktual baterai
 float bacaTeganganBaterai() {
   int adc = analogRead(3); // GPIO3
   float v_adc = (adc / 4095.0) * 3.3; // ADC 12-bit
@@ -1583,8 +1486,9 @@ float bacaTeganganBaterai() {
   return v_batt;
 }
 
+// Fungsi konversi ke persen
 int persenBaterai(float v_batt) {
-  float persen = mapf(v_batt, 6.6, 8.4, 0, 100);
+  float persen = mapf(v_batt, 6.6, 8.1, 0, 100); // <- disesuaikan dengan hasil multimeter
   persen = constrain(persen, 0, 100);
   return (int)persen;
 }
