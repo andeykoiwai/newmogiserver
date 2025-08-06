@@ -353,6 +353,7 @@ void eyeAnimationTask(void *pvParameters) {
         float delta = (persen_baterai_smooth - 20.0) * 0.01;
         n3.input = constrain(-1.0 + delta, -1.0, 1.0); // agar aman
       }
+      
     }
     // Tambahkan update mood dari neuron setiap 5 detik
     static unsigned long lastMoodUpdate = 0;
@@ -360,6 +361,8 @@ void eyeAnimationTask(void *pvParameters) {
       lastMoodUpdate = millis();
       hasil = (n1.aktifasi() + n2.aktifasi() + n3.aktifasi() + n4.aktifasi()) / 4.0;
       Emosi mood = interpretasiPerasaan(hasil);
+      cetakEmosi(mood);
+      eyes.setText(emosiTeks.c_str());
       // Set mood ke mata robot
       switch(mood) {
         case SENANG:
@@ -387,13 +390,22 @@ void eyeAnimationTask(void *pvParameters) {
       lastSave = millis();
     }
     static unsigned long lastCuriosityDecay = 0;
-    if(millis() - lastCuriosityDecay > 300000){
-      //belum di tambah jika di senuh harusnya belum start
-      // waktu 5 menit sudah cukup untuk berkurang 5%
+    if (millis() - lastCuriosityDecay > 300000) { // setiap 5 menit
       lastCuriosityDecay = millis();
-      n2.input *= 0.95;
-      n1.input *= 0.95;
+
+      // Jika nilai sudah sangat kecil, mulai dorong ke arah negatif
+      if (n2.input < 0.1) n2.input -= 0.05;  // sentuhan turun ke negatif
+      else n2.input *= 0.95;
+
+      if (n1.input < 0.1) n1.input -= 0.05;  // suara turun ke negatif
+      else n1.input *= 0.95;
+
+      // Optional: curiosity drop jika terlalu lama kosong
+      if (curiosity < 0.2) {
+        n4.input -= 0.05; // rasa ingin tahu jadi bingung/cemas
+      }
     }
+
     vTaskDelay(20 / portTICK_PERIOD_MS); // Delay untuk mengontrol FPS
   }
 }
@@ -1069,7 +1081,7 @@ void checkObstacle() {
     } else {
       // Tidak ada obstacle - normal
       obstacleDetected = false;
-      eyes.clearText();
+      // eyes.clearText();
       myServo.write(90);
       motorStop();
     }
